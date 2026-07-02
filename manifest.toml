@@ -1,16 +1,16 @@
-# Plugin manifest — the contract with the Jasper host (spec apiVersion 0.2).
+# Plugin manifest — the contract with the Jasper host (spec apiVersion 0.3).
 # Full reference: https://github.com/xVanTuring/jasper/blob/main/docs/plugin-spec.md
 
 id = "my-plugin"            # TODO: unique + permanent, ^[a-z0-9][a-z0-9-]*$
 name = "My Plugin"          # TODO: display name
 version = "0.1.0"           # bump on every release; git tag must be v<version>
-apiVersion = "0.2"
+apiVersion = "0.3"
 description = "Trims trailing whitespace from every line before a note is saved."  # TODO
 author = ""                 # TODO
 
 [backend]
 wasm = "plugin.wasm"
-capabilities = []           # "settings" | "host:http" — each one is shown to the user for consent
+capabilities = []           # "settings" | "host:http" | "notes:read" | "notes:write" | "host:ai" — each shown for consent
 hooks = ["before-save"]
 
 # Zero-code contributions (no wasm needed) — themes:
@@ -36,6 +36,15 @@ hooks = ["before-save"]
 # [[contributes.toolbar]]
 # command = "do-thing"
 # location = "note-toolbar"
+
+# Sidebar panel (0.3) — static widget (e.g. chat wired to a backend command) or a
+# dynamic tree rendered from your wasm `ui` slot (view -> UiNode, spec §9.2/§9.3):
+# [[contributes.sidebar]]
+# id = "my-panel"
+# title = "My Panel"
+# icon = "chat"             # icon token (spec §9.1), host falls back to "plug"
+# widget = "chat"           # chat | list | tree | form | markdown | button
+# command = "do-thing"      # static mode; or `view = "main"` for server-driven UI
 
 # User-facing settings (read them via sdk::host::settings_get; needs "settings" capability):
 # [settings.schema]

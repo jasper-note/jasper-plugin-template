@@ -14,10 +14,12 @@ native unit tests, a validating packager, and CI that builds and releases the
 2. Rename things — `id`/`name`/`description`/`author` in `manifest.toml`, and
    `package.name` in `Cargo.toml` (keep it equal to the manifest `id`).
 3. Write your plugin in `src/lib.rs`. The `register!` macro accepts any
-   combination of three slots:
+   combination of four slots:
    - `before_save: fn(Note) -> Result<Note, String>` — rewrite notes on save
    - `storage: T` where `T: sdk::storage::Storage` — a sync-storage provider
-   - `command: fn(&str, Value) -> Result<Value, PluginError>` — editor commands
+   - `command: fn(&str, Value) -> Result<Value, PluginError>` — editor/sidebar commands
+   - `ui: fn(&str, Value) -> Result<Value, PluginError>` — server-driven sidebar
+     trees (returns a UiNode, spec §9.3)
 4. Develop:
 
    ```sh
@@ -42,6 +44,12 @@ Reference material: [plugin spec](https://github.com/xVanTuring/jasper/blob/main
 | `now_ms()` — **the only clock in the sandbox** | none |
 | `settings_get` / `settings_set` (plugin-scoped KV) | `settings` |
 | `http_request` (HTTP(S) proxied by the host) | `host:http` |
+| `notes_get` / `notes_search` / `notes_list_folders` | `notes:read` |
+| `notes_upsert` / `notes_create` — confirm-first proposals by default (`pending=true` means *not yet written*) | `notes:write` |
+| `ai_complete(messages, options)` — host-configured AI, keys never reach the plugin | `host:ai` |
+
+`notes.*` and `ai.complete` are only available while handling a `command`/`ui`
+dispatch (hooks and storage calls get `unsupported`).
 
 Limits (enforced by the host): 64 MiB memory / 2 s CPU per call for normal
 plugins, 256 MiB / 10 s for storage providers; wall-clock counts CPU only, so
@@ -86,8 +94,8 @@ flow into your plugin.
 
 模板自带一个可工作的 before-save 插件（去行尾空白）+ 原生单测 + 校验打包脚本 + CI。
 用法：GitHub 上点 **Use this template** → 改 `manifest.toml` 的 `id`/`name` 和
-`Cargo.toml` 的 `package.name` → 在 `src/lib.rs` 写逻辑（`register!` 三槽可组合：
-`before_save` / `storage` / `command`）→ `cargo test` → 构建 wasm →
+`Cargo.toml` 的 `package.name` → 在 `src/lib.rs` 写逻辑（`register!` 四槽可组合：
+`before_save` / `storage` / `command` / `ui`）→ `cargo test` → 构建 wasm →
 `python3 scripts/package.py` 出 `.jplug` → Jasper 插件面板安装。
 发布：改 `manifest.toml` 版本号后推 `v<版本>` tag，CI 自动出 GitHub Release。
 契约见 [plugin-spec.md](https://github.com/xVanTuring/jasper/blob/main/docs/plugin-spec.md)，
