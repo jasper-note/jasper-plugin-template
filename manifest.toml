@@ -1,0 +1,42 @@
+# Plugin manifest — the contract with the Jasper host (spec apiVersion 0.2).
+# Full reference: https://github.com/xVanTuring/jasper/blob/main/docs/plugin-spec.md
+
+id = "my-plugin"            # TODO: unique + permanent, ^[a-z0-9][a-z0-9-]*$
+name = "My Plugin"          # TODO: display name
+version = "0.1.0"           # bump on every release; git tag must be v<version>
+apiVersion = "0.2"
+description = "Trims trailing whitespace from every line before a note is saved."  # TODO
+author = ""                 # TODO
+
+[backend]
+wasm = "plugin.wasm"
+capabilities = []           # "settings" | "host:http" — each one is shown to the user for consent
+hooks = ["before-save"]
+
+# Zero-code contributions (no wasm needed) — themes:
+# [[contributes.theme]]
+# id = "my-theme"
+# name = "My Theme"
+# base = "light"            # "light" | "dark"
+# css = "theme.css"
+
+# Storage provider (implement sdk::storage::Storage, usually with capabilities = ["host:http"]):
+# [[contributes.storage]]
+# id = "my-storage"
+# name = "My Storage"
+# [contributes.storage.config_schema]
+# url = { type = "string", label = "Server URL", required = true }
+# token = { type = "secret", label = "API token" }
+
+# Editor command + toolbar button (target = "backend" calls your wasm `command` slot):
+# [[contributes.command]]
+# id = "do-thing"
+# title = "Do the thing"
+# target = "backend"
+# [[contributes.toolbar]]
+# command = "do-thing"
+# location = "note-toolbar"
+
+# User-facing settings (read them via sdk::host::settings_get; needs "settings" capability):
+# [settings.schema]
+# greeting = { type = "string", label = "Greeting", default = "hi" }

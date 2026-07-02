@@ -1,0 +1,18 @@
+[package]
+name = "my-plugin"          # TODO: rename to your plugin id (keep it equal to manifest.toml `id`)
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+jasper-plugin-sdk = "0.2"
+# Need date parsing/formatting (common in storage plugins)? Disable chrono's default
+# features — otherwise wasm-bindgen leaks in and the sandbox can't instantiate the wasm:
+# chrono = { version = "0.4", default-features = false, features = ["std"] }
+
+[profile.release]
+opt-level = "s"
+lto = true
