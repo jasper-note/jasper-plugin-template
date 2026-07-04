@@ -1,5 +1,5 @@
 # Plugin manifest — the contract with the Jasper host (spec apiVersion 0.3).
-# Full reference: https://github.com/xVanTuring/jasper/blob/main/docs/plugin-spec.md
+# Full reference: https://github.com/jasper-note/jasper/blob/main/docs/plugin-spec.md
 
 id = "my-plugin"            # TODO: unique + permanent, ^[a-z0-9][a-z0-9-]*$
 name = "My Plugin"          # TODO: display name

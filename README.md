@@ -1,6 +1,6 @@
 # Jasper plugin template
 
-Template for writing [Jasper](https://github.com/xVanTuring/jasper) plugins in Rust.
+Template for writing [Jasper](https://github.com/jasper-note/jasper) plugins in Rust.
 Plugins compile to `wasm32-unknown-unknown` and run inside the host's wasmi sandbox;
 a plugin package (`.jplug`) is a zip of `manifest.toml` + `plugin.wasm` (+ assets).
 
@@ -31,8 +31,8 @@ native unit tests, a validating packager, and CI that builds and releases the
 5. Install it: Jasper top bar → plug icon → Install → pick the `.jplug` → enable
    (the user is asked to consent to each declared capability).
 
-Reference material: [plugin spec](https://github.com/xVanTuring/jasper/blob/main/docs/plugin-spec.md)
-(the contract), [example plugins](https://github.com/xVanTuring/jasper/tree/main/plugins-examples)
+Reference material: [plugin spec](https://github.com/jasper-note/jasper/blob/main/docs/plugin-spec.md)
+(the contract), [example plugins](https://github.com/jasper-note/jasper/tree/main/plugins-examples)
 (hook / storage / command / theme), and the
 [`jasper-plugin-sdk` docs](https://docs.rs/jasper-plugin-sdk).
 
@@ -98,7 +98,7 @@ flow into your plugin.
 `before_save` / `storage` / `command` / `ui`）→ `cargo test` → 构建 wasm →
 `python3 scripts/package.py` 出 `.jplug` → Jasper 插件面板安装。
 发布：改 `manifest.toml` 版本号后推 `v<版本>` tag，CI 自动出 GitHub Release。
-契约见 [plugin-spec.md](https://github.com/xVanTuring/jasper/blob/main/docs/plugin-spec.md)，
-参考实现见 [plugins-examples](https://github.com/xVanTuring/jasper/tree/main/plugins-examples)。
+契约见 [plugin-spec.md](https://github.com/jasper-note/jasper/blob/main/docs/plugin-spec.md)，
+参考实现见 [plugins-examples](https://github.com/jasper-note/jasper/tree/main/plugins-examples)。
 坑：别引入会带 wasm-bindgen 的依赖（如 chrono 默认 feature）；沙箱无时钟用
 `host::now_ms()`；打包脚本会检查 wasm import 是否干净。
